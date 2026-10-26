@@ -26,7 +26,7 @@ Restate the request as a list of operations, each on a stable ID:
 IDs are never renumbered or reused. If the request is ambiguous (which R? narrower or wider?), ask before going further: AskUserQuestion, recommendation first.
 
 ## 2. Knowledge check
-If an operation needs facts `docs/research.md` doesn't have (a new library, an unexplored part of the source), offer a targeted `challenge-kit:research <topic>` run first, and use what it finds.
+If an operation needs facts `docs/research.md` doesn't have (a new library, an unexplored part of the source), offer `challenge-kit:research ask "<question>"` (or `research <topic>` for a whole new area) first, and use what it finds. If the change shifts a priority ("we now care most about build speed"), offer `challenge-kit:research steer "<priority>"`: its "If priorities change" and Tensions sections show which T choices should move.
 
 ## 3. Impact table
 Find what each operation touches:

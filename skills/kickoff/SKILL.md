@@ -18,10 +18,10 @@ Brief: `$ARGUMENTS`, or `CHALLENGE.md` if empty.
 - `gh repo view` works (a GitHub remote you can push to). If not, say so: steps 1–6 still run, step 7 needs it.
 
 ## 1. Research
-- `docs/research.md` doesn't exist: run the full pass of the `challenge-kit:research` skill (agenda approval included).
-- It exists: show its agenda table and date, and ask (AskUserQuestion, recommendation first): **reuse** it as is / **refresh** some topics (then run `challenge-kit:research <topics>`) / **redo** it (the full pass, replacing it). Never overwrite it without that answer.
+- `docs/research.md` doesn't exist: run the full pass of the `challenge-kit:research` skill (priorities, agenda approval and follow-up loop included).
+- It exists: show its agenda table, priorities and date, and ask (AskUserQuestion, recommendation first): **reuse** it (then run its follow-up loop, and its priorities step if it has none) / **refresh** some topics (then run `challenge-kit:research <topics>`) / **redo** it (the full pass, replacing it). Never overwrite it without that answer.
 
-Everything below draws on `docs/research.md`.
+Move on only when the user has ended the research follow-up loop. Everything below draws on `docs/research.md`: its Priorities, each topic's recommendation, and "How it fits together".
 
 ## 2. Requirements and out of scope
 Draft from the brief and research:
@@ -34,9 +34,9 @@ Then ask about every gap: things the brief leaves open, implies but doesn't stat
 Propose, from research recommendations:
 - **Services**: what each owns, calls, and how it trusts callers; what a consumer does when its provider is down.
 - **Contracts**: one per boundary between separately built pieces (API, shared library interface, file or event format).
-- **Technology choices T<n>**: each with why, the alternative, and the research section it rests on.
+- **Technology choices T<n>**: each with why, the alternative, the research section it rests on, and the priorities it serves or costs. Take the combination from research's "How it fits together", not each topic's winner in isolation.
 
-Ask only about choices where research found a real trade-off or the brief says the choice will be questioned. Accept the rest as proposed; they appear in the final review anyway.
+Ask only about choices where research found a real trade-off (a row in its Tensions table) or the brief says the choice will be questioned. Accept the rest as proposed; they appear in the final review anyway. If the user asks a research question here, run `challenge-kit:research ask "<question>"` and come back.
 
 ## 4. Milestones and priority
 - **M1 Integration**: scaffolding, `make check`, CI job named `check`, contract docs + examples + mocks. It goes first.

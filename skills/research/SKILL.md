@@ -1,35 +1,64 @@
 ---
 name: research
-description: Use when a project's brief, repo or a proposed change needs facts gathered before decisions are made, or when the user asks to research or re-research a topic.
-argument-hint: "[topic ...]"
+description: Use when a project's brief, repo or a proposed change needs facts gathered before decisions are made, when the user asks a question about options, trade-offs or performance that should be researched and recorded, when the user wants to steer research with priorities, or when the user asks to research or re-research a topic.
+argument-hint: "[topic ... | ask \"<question>\" | steer \"<priority>\"]"
 allowed-tools: Bash(git ls-files *) Bash(git log *) Bash(ls *) Bash(date +%F)
 ---
 
 # Research
 
-Learn the project before deciding anything about it. Output: `docs/research.md`, built from `${CLAUDE_PLUGIN_ROOT}/templates/research.md.tmpl`.
+Learn the project before deciding anything about it, steered by the user's priorities, in a loop the user drives. Output: `docs/research.md`, shaped like `${CLAUDE_PLUGIN_ROOT}/templates/research.md.tmpl`.
 
-Brief: `CHALLENGE.md` unless SPEC.md or the user names another path.
+Brief: `CHALLENGE.md` unless SPEC.md or the user names another path. Arguments: `$ARGUMENTS`.
 
-## With no arguments (full pass; kickoff runs this)
+## Modes
+| Arguments | Do |
+|---|---|
+| none | Full pass: steps 1–6 |
+| `<topic> ...` | Confirm the topics, step 4 for them only (replace or append their sections), then steps 5–6 |
+| `ask "<question>"` | Step 6 with that question, then keep looping |
+| `steer "<priority>"` | Step 2 with that priority, then step 5, then step 6 |
 
-1. **Survey, yourself, cheaply.** Read the brief in full. Inventory the repo: `git ls-files`, top-level layout, languages, existing services and data sources, build/run commands (Makefile, compose, package scripts), CI, docs. Ten or so reads at most; this only feeds the agenda.
-2. **Propose an agenda** of 4–8 topics. Each topic informs at least one decision the spec will make. Cover, where the brief has them:
-   - the source data or existing system and its real shape
-   - what the brief says is evaluated or required, and what it leaves open
-   - each deliverable's technology options
-   - integration points between deliverables
-   - risks: data quirks, version constraints, anything the survey found surprising
+## 1. Survey (yourself, cheaply)
+Read the brief in full. Inventory the repo: `git ls-files`, layout, languages, existing services and data, build/run commands, CI, docs. About ten reads; this only feeds the agenda.
 
-   Show it as a table: # · Topic · Decisions it informs · Focus questions. Ask the user to approve, edit, drop or add topics (AskUserQuestion, recommendation first). Do not dispatch before approval.
-3. **Dispatch** one `challenge-kit:researcher` agent per approved topic, all in one message so they run in parallel. Each prompt: the topic, the decisions it informs, the brief's path, the focus questions, and "return the format in your instructions".
-4. **Synthesize** into `docs/research.md`: the agenda table, then each agent's section in agenda order. Resolve contradictions between sections by checking the evidence yourself, and say which one held. Then tell the user, in chat, the recommendations in one line each and the open questions that need them.
+## 2. Priorities
+Ask the user what should steer the research: performance targets, scale, build speed, team familiarity, cost, anything. Record each in the Priorities table:
+- **constraint**: a must, from the brief or the user ("handle 100 users/minute"). Options that fail it are out.
+- **preference**: traded off against the others, with a weight high / medium / low ("fastest framework", "fast CI builds").
 
-## With topics (`/challenge-kit:research <topic> ...`)
+Ask the kind and weight when the user doesn't say. Read the brief for constraints the user didn't mention and propose them. A priority never decides a topic on its own: it is one input to every topic's evaluation.
 
-Skip the survey. Confirm the topic list with the user, dispatch one researcher per topic, then replace that topic's section in `docs/research.md` (or append a new numbered one) and update the agenda table and date. Leave other sections alone.
+With `steer`: add or change that priority, then re-evaluate every topic it touches (step 4 for those topics, with the new priority) before step 5.
+
+## 3. Agenda
+Propose 4–8 topics, each informing at least one decision the spec will make: the source data or existing system, what the brief evaluates or leaves open, each deliverable's technology options, integration points, risks. Show: # · Topic · Decisions it informs · Priorities it bears on · Focus questions. The user approves, edits, drops or adds (AskUserQuestion, recommendation first). Dispatch nothing before approval.
+
+## 4. Research topics
+Dispatch one `challenge-kit:researcher` per topic, all in one message. Each prompt: the topic, the decisions it informs, the brief's path, the focus questions, **the full Priorities table**, and "return the topic format in your instructions". Write each returned section into `docs/research.md` in agenda order. Where two sections contradict, check the evidence yourself and say which held.
+
+## 5. How it fits together
+Rewrite this section from all topics, priorities and follow-ups:
+- **The recommended combination**: each topic's recommendation as one system; which priorities each serves and which it costs.
+- **Tensions**: every place where serving one priority works against another (a faster runtime vs faster CI builds; horizontal scaling vs operational simplicity). For each: where it bites, the options, the recommended resolution given the weights, and what would flip it.
+- **If priorities change**: which recommendations move if a preference is dropped or reweighted.
+
+A topic's recommendation may differ from the option that wins its headline priority. Say so, and why.
+
+## 6. Follow-up loop
+Show the user, in chat: the recommended combination in a few lines, the top tensions, and the open questions. Then ask: **"Any follow-up questions? Name a topic number, or just ask. Say `done` when finished."**
+
+For each question:
+1. **Route** it to a topic (or several). If none fits, it becomes a new numbered topic in the agenda.
+2. **Answer** with a `challenge-kit:researcher` in question mode: the question, the topic's current section, the Priorities table, and any condition the user gave ("considering we integrate with GitHub"). Several questions at once: one researcher each, in one message.
+3. **Show** the answer in chat, short: the direct answer first, then what it depends on.
+4. **Record** it under that topic's Follow-ups: date, question, answer, evidence. If it changes the topic's recommendation, update the recommendation and add "Recommendation updated: was X, now Y, because …".
+5. **Rewrite** step 5 if anything changed.
+6. Ask again.
+
+The loop ends only when the user says `done` (or clearly ends it). When kickoff ran this skill, return to kickoff then.
 
 ## Rules
-- Facts come from researchers with evidence. Your own claims in `docs/research.md` need evidence too.
+- Every finding, answer and claim in `docs/research.md` has evidence. Comparisons ("which is faster") name what was compared, under what conditions, with what source; unverified claims go under Open questions.
 - Research recommends; it decides nothing. Decisions happen in kickoff or change-spec, with the user.
 - Never write SPEC.md here.

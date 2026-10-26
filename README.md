@@ -40,6 +40,8 @@ Anytime:
 |---|---|
 | Add, drop, change or clarify a requirement; move something in or out of scope; change a tech choice | `/challenge-kit:change-spec "<the change>"` |
 | Research or re-research a topic | `/challenge-kit:research <topic>` |
+| Ask a follow-up research question (recorded in `docs/research.md`) | `/challenge-kit:research ask "which is faster here, A or B?"` |
+| Steer research with a priority (weighed, not a mandate) | `/challenge-kit:research steer "handle 100 users/minute"` |
 | Re-sync GitHub with SPEC.md | `/challenge-kit:sync-github` |
 | Stop or redo a worker's issue | `/challenge-kit:orchestrate stop 42` / `redo 42` |
 | Turn a correction into a rule | `/challenge-kit:record-correction "<what went wrong>"` |

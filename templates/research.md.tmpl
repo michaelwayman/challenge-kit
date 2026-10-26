@@ -1,25 +1,58 @@
 # Research
 
 <!--
-Written by /challenge-kit:research. One section per agenda topic; a re-run replaces or appends that topic's section only.
-Every finding cites evidence: a repo path with line (path/to/file:42), a command and its output, or a URL.
+Written by /challenge-kit:research. Topic sections are replaced or extended per topic; "How it fits together" is rewritten after every change.
+Every finding and answer cites evidence: a repo path with line (path/to/file:42), a command and its output, or a URL with version or date.
 -->
 
 Brief: {{BRIEF_PATH}}. Last updated: {{YYYY-MM-DD}}.
 
+## Priorities
+
+<!-- The user's steers. They weight the evaluation; they don't decide it. A constraint is a must (from the brief or the user); a preference is traded off against the others. -->
+
+| ID | Priority | Kind | Weight | Source |
+|---|---|---|---|---|
+| P1 | {{e.g. Handle at least 100 users/minute on the API}} | constraint | n/a | {{user, YYYY-MM-DD}} |
+| P2 | {{e.g. Fastest backend framework}} | preference | high | {{user, YYYY-MM-DD}} |
+
+## How it fits together
+
+<!-- Rewritten whenever a topic, follow-up or priority changes. -->
+
+### The recommended combination
+{{One paragraph: the choices from each topic as one system, and why they work together.}}
+
+| Topic | Recommendation | Serves | Costs |
+|---|---|---|---|
+| {{n. topic}} | {{choice}} | {{P…}} | {{P… it works against, if any}} |
+
+### Tensions
+| Between | Where it bites | Options | Recommended resolution | What would flip it |
+|---|---|---|---|---|
+| {{P2}} vs {{P4}} | {{e.g. compiled deps speed the API but slow CI builds}} | {{a / b}} | {{choice, why}} | {{e.g. if P4 became high weight}} |
+
+### If priorities change
+- {{If P… is dropped or reweighted: which recommendations change, and to what}}
+
 ## Agenda
 
-| # | Topic | Why it matters | Status |
+| # | Topic | Decisions it informs | Status |
 |---|---|---|---|
-| 1 | {{topic}} | {{which decision it informs}} | done |
+| 1 | {{topic}} | {{decision}} | done |
 
 ## {{n}}. {{Topic}}
 
 ### Findings
-- {{Finding}}. Evidence: `{{path:line}}` | `{{command}}` → {{output}} | {{URL}}
+- {{Finding}}. Evidence: `{{path:line}}` | `{{command}}` → {{output}} | {{URL}} ({{version or date}})
+
+### Fit against priorities
+| Priority | How the options compare | Evidence |
+|---|---|---|
+| {{P…}} | {{option A vs B on this priority}} | {{source}} |
 
 ### Recommendation
-{{What to do and why, in two or three sentences}}
+{{What to do and why, two or three sentences. Name the priorities it serves and any it works against.}}
 
 ### Options considered
 | Option | For | Against |
@@ -31,3 +64,10 @@ Brief: {{BRIEF_PATH}}. Last updated: {{YYYY-MM-DD}}.
 
 ### Open questions
 - {{question for the user}}
+
+### Follow-ups
+<!-- Appended by the follow-up loop and `research ask`. Newest last. -->
+
+**Q ({{YYYY-MM-DD}}): {{the user's question}}**
+{{Answer: direct first sentence, then the conditions it depends on.}} Evidence: {{sources}}.
+{{If it changed the recommendation: "Recommendation updated: was X, now Y, because …"}}
