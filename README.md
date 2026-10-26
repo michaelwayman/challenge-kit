@@ -6,13 +6,25 @@ It knows nothing about any particular challenge. A guided research step learns e
 
 ## Install
 
+From GitHub (private repo: you need read access to `michaelwayman/challenge-kit`):
+
+```bash
+claude plugin marketplace add michaelwayman/challenge-kit
+```
+
+Or from a local clone:
+
 ```bash
 claude plugin marketplace add ~/Projects/challenge-kit
 ```
 
+Then, either way:
+
 ```bash
 claude plugin install challenge-kit@challenge-kit
 ```
+
+Kickoff can also enable the plugin for everyone who opens a project, by writing the GitHub marketplace into that project's `.claude/settings.json`.
 
 Needs `gh` (with the `project` scope: `gh auth refresh -s project`) and `jq`. While working on the kit itself, `claude --plugin-dir ~/Projects/challenge-kit` loads it straight from disk; `/reload-plugins` picks up edits.
 
