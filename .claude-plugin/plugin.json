@@ -1,0 +1,7 @@
+{
+  "name": "challenge-kit",
+  "version": "0.1.0",
+  "description": "Take a coding challenge from its brief to a spec, GitHub-tracked milestones and parallel, reviewed work. Project-agnostic: guided research learns each project.",
+  "author": { "name": "Michael Wayman" },
+  "keywords": ["planning", "spec", "github", "orchestration", "code-review"]
+}

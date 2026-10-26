@@ -1,0 +1,31 @@
+# Agent guide
+
+{{One line: what this project is.}} Brief: [{{BRIEF_PATH}}]({{BRIEF_PATH}}) (read-only). Spec: [SPEC.md](SPEC.md). Research: [docs/research.md](docs/research.md). Contracts: [docs/contracts/](docs/contracts/).
+
+Built with the challenge-kit plugin. Work is tracked on GitHub: milestones, issues and the Project at {{PROJECT_URL}}.
+
+## Roles
+
+- The **user** owns `SPEC.md`: what gets built, what doesn't, and the priorities. It changes only through `/challenge-kit:change-spec`
+- The **orchestrator** session (`/challenge-kit:orchestrate`) owns the contracts and the Integration milestone. It plans rounds, starts workers and answers their questions. It never builds service code and never merges
+- A **worker** session (`/challenge-kit:work-issue <n>`) builds one issue in its own worktree, opens one PR and stops. The user merges
+
+## Boundaries
+
+- A worker edits only its issue's `Touches:` paths
+- Contracts change only through a `contract` issue. A worker that needs a change stops and messages the orchestrator
+- Each side tests against the contract's examples, never against another service's code or branch
+<!-- Kickoff adds one line per service: what it owns and how it trusts the others, matching SPEC.md § Services and boundaries -->
+{{BOUNDARY_LINES}}
+
+## Working rules
+
+{{WORKING_RULES}}
+
+## Review rules
+
+<!-- Project-specific checks the reviewer enforces on every PR. Added by /challenge-kit:record-correction. -->
+
+## Learned rules
+
+<!-- Corrections turned into rules by /challenge-kit:record-correction. Newest last. Each: the rule, then (YYYY-MM-DD, trigger #n). -->

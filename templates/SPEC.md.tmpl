@@ -1,0 +1,59 @@
+# {{PROJECT_NAME}}: Spec
+
+<!--
+Single source of truth for what gets built. Written by /challenge-kit:kickoff, changed only through /challenge-kit:change-spec.
+IDs (R, O, T, M) are stable: never renumber, never reuse. A removed requirement stays, marked removed.
+Brief: {{BRIEF_PATH}} (read-only). Research: docs/research.md.
+-->
+
+GitHub Project: {{PROJECT_URL}} (number {{PROJECT_NUMBER}})
+
+## Requirements
+
+<!-- One per capability. Priority: P0 | P1 | P2. Status: active | removed (YYYY-MM-DD, reason). -->
+
+### R1. {{Capability, as something a user or caller can do}}
+- Source: {{BRIEF_PATH}} § {{section}}
+- Priority: P0
+- Status: active
+- Milestone: M1
+- Acceptance:
+  - {{Observable, testable statement}}
+
+## Out of scope
+
+<!-- Dropped, not deferred. Moving an item into scope goes through change-spec and leaves a cross-reference. -->
+
+- **O1.** {{Item}}. Why: {{reason}}. Source: {{brief § | user}}
+
+## Services and boundaries
+
+| Service | Path | Owns | Calls | Trusts callers how | Port | When a provider is down |
+|---|---|---|---|---|---|---|
+| {{name}} | `{{path}}/` | {{data and behavior}} | {{services/contracts}} | {{mechanism}} | {{port}} | {{behavior}} |
+
+## Contracts
+
+<!-- One per boundary. The doc, examples/ and mock/ live under docs/contracts/<name>/ and change only through a `contract` issue. -->
+
+- **{{name}}** ([doc](docs/contracts/{{name}}.md)): {{provider}} → {{consumer}}. {{One-paragraph summary}}
+
+## Technology choices
+
+| ID | Area | Choice | Why | Alternative considered | Research |
+|---|---|---|---|---|---|
+| T1 | {{area}} | {{choice}} | {{reason}} | {{alternative}} | [{{topic}}](docs/research.md#{{anchor}}) |
+
+## Milestones
+
+<!-- Every active R maps to exactly one milestone. Priority orders milestones in the Project; dependencies still win. -->
+
+| ID | Milestone | Kind | Delivers | Priority | Depends on |
+|---|---|---|---|---|---|
+| M1 | Integration | scaffolding, contracts, CI | {{R…}} | P0 | none |
+
+## Changelog
+
+| Date | Change | By |
+|---|---|---|
+| {{YYYY-MM-DD}} | Initial spec | kickoff |

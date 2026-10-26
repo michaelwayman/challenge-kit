@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+# GitHub plumbing for challenge-kit: labels, milestones, branch protection and the Project.
+# Every subcommand is idempotent and exits non-zero on any failure. Needs gh (with the
+# `project` scope for project commands) and jq. Runs against the repo in the current directory.
+#
+#   ck-github labels [service:<s> | req:R<n> ...]   fixed labels plus the ones given
+#   ck-github milestones <title> ...                 create the missing ones (never reopens)
+#   ck-github reopen-milestone <title>               reopen a closed milestone
+#   ck-github protect [check-name]                   require the CI check (default: check) on main
+#   ck-github project <title> [number]               ensure the Project, its fields and board; prints number and url
+#   ck-github add-item <number> <issue-url> [P0|P1|P2]  add an issue; sets Priority only if empty
+#   ck-github set-status <number> <issue-url> <status>  Todo | Ready | In progress | In review | Done
+#   ck-github items <number>                         TSV: issue number, status, priority, title
+set -euo pipefail
+
+die() { echo "ck-github: $*" >&2; exit 1; }
+
+command -v gh >/dev/null || die "gh is not installed"
+command -v jq >/dev/null || die "jq is not installed"
+
+REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner) || die "not in a GitHub repo"
+OWNER=${REPO%%/*}
+
+STATUS_OPTIONS='[
+  {"name":"Todo","color":"GRAY","description":"Not ready: blocked or waiting for triage"},
+  {"name":"Ready","color":"BLUE","description":"Dependencies merged; a lane can take it"},
+  {"name":"In progress","color":"YELLOW","description":"A worker is building it"},
+  {"name":"In review","color":"PURPLE","description":"PR open"},
+  {"name":"Done","color":"GREEN","description":"Merged or closed"}
+]'
+PRIORITY_OPTIONS='[
+  {"name":"P0","color":"RED","description":"Do first"},
+  {"name":"P1","color":"ORANGE","description":"Next"},
+  {"name":"P2","color":"GRAY","description":"Later"}
+]'
+
+label() { # name color description
+  gh label create "$1" --color "$2" --description "$3" --force >/dev/null || die "label $1 failed"
+  echo "label $1"
+}
+
+cmd_labels() {
+  local l
+  for l in "$@"; do
+    case $l in
+      service:?*|req:R[0-9]*) ;;
+      *) die "unknown label kind: $l (want service:<s> or req:R<n>)" ;;
+    esac
+  done
+  label ready        0e8a16 "Dependencies merged; a lane can take it"
+  label blocked       d93f0b "Waiting on another issue or a contract change"
+  label plan-approved 0052cc "The user approved its plan; a worker can start"
+  label needs-triage  fbca04 "Proposed by an agent; waits for the user"
+  label contract      5319e7 "Changes docs/contracts/; the orchestrator builds it"
+  label integration   1d76db "Crosses services; the orchestrator builds it"
+  for l in "$@"; do
+    case $l in
+      service:*) label "$l" c5def5 "Service ${l#service:}" ;;
+      req:*)     label "$l" bfdadc "Delivers ${l#req:} in SPEC.md" ;;
+    esac
+  done
+}
+
+milestone_field() { # title field -> value, empty if missing
+  gh api "repos/$REPO/milestones?state=all&per_page=100" --paginate \
+    | jq -rs --arg t "$1" --arg f "$2" '[.[][] | select(.title == $t)][0][$f] // empty'
+}
+
+cmd_milestones() {
+  [ $# -gt 0 ] || die "milestones needs at least one title"
+  local t
+  for t in "$@"; do
+    if [ -n "$(milestone_field "$t" number)" ]; then
+      echo "milestone $t (exists)"
+    else
+      gh api "repos/$REPO/milestones" -f title="$t" >/dev/null || die "milestone $t failed"
+      echo "milestone $t (created)"
+    fi
+  done
+}
+
+cmd_reopen_milestone() {
+  [ $# -eq 1 ] || die "reopen-milestone needs one title"
+  local n
+  n=$(milestone_field "$1" number)
+  [ -n "$n" ] || die "no milestone titled $1"
+  gh api -X PATCH "repos/$REPO/milestones/$n" -f state=open >/dev/null
+  echo "milestone $1 (open)"
+}
+
+cmd_protect() {
+  local check=${1:-check}
+  jq -n --arg c "$check" '{
+    required_status_checks: {strict: false, contexts: [$c]},
+    enforce_admins: true,
+    required_pull_request_reviews: {required_approving_review_count: 0},
+    restrictions: null
+  }' | gh api -X PUT "repos/$REPO/branches/main/protection" --input - >/dev/null \
+    || die "branch protection failed (needs admin rights, and main must exist)"
+  echo "protection main requires $check"
+}
+
+gql() { # query, then name=value variables
+  local q=$1; shift
+  local args=() kv
+  for kv in "$@"; do args+=(-F "$kv"); done
+  gh api graphql -f query="$q" ${args[@]+"${args[@]}"}
+}
+
+project_id() { gh project view "$1" --owner "$OWNER" --format json -q .id; }
+
+project_fields() { # project-id -> JSON array of single-select fields {id,name,options}
+  gql 'query($id:ID!){ node(id:$id){ ... on ProjectV2 { fields(first:50){ nodes{
+        ... on ProjectV2SingleSelectField { id name options { id name } } } } } } }' id="$1" \
+    | jq '[.data.node.fields.nodes[] | select(.id != null)]'
+}
+
+set_options() { # field-id desired-options-json existing-options-json
+  # Keep existing option ids (matched case-insensitively) so items keep their values.
+  local merged
+  merged=$(jq -n --argjson want "$2" --argjson have "$3" '
+    $want | map(. as $w | ($have | map(select((.name|ascii_downcase) == ($w.name|ascii_downcase)))[0]) as $h
+      | if $h then . + {id: $h.id} else . end)')
+  jq -n --arg f "$1" --argjson o "$merged" '{
+    query: "mutation($f:ID!,$o:[ProjectV2SingleSelectFieldOptionInput!]){ updateProjectV2Field(input:{fieldId:$f, singleSelectOptions:$o}){ clientMutationId } }",
+    variables: {f: $f, o: $o}
+  }' | gh api graphql --input - >/dev/null
+}
+
+cmd_project() {
+  [ $# -ge 1 ] || die "project needs a title"
+  local title=$1 num=${2:-} pid fields status priority views
+  if [ -z "$num" ]; then
+    num=$(gh project list --owner "$OWNER" --format json --limit 200 \
+      | jq -r --arg t "$title" '[.projects[] | select(.title == $t)][0].number // empty')
+  fi
+  if [ -z "$num" ]; then
+    num=$(gh project create --owner "$OWNER" --title "$title" --format json -q .number) \
+      || die "project create failed (missing scope? run: gh auth refresh -s project)"
+  fi
+  gh project link "$num" --owner "$OWNER" --repo "$REPO" >/dev/null 2>&1 || true
+  pid=$(project_id "$num")
+
+  fields=$(project_fields "$pid")
+  status=$(jq -c '[.[] | select(.name == "Status")][0] // empty' <<<"$fields")
+  [ -n "$status" ] || die "project $num has no Status field"
+  set_options "$(jq -r .id <<<"$status")" "$STATUS_OPTIONS" "$(jq -c .options <<<"$status")"
+
+  priority=$(jq -c '[.[] | select(.name == "Priority")][0] // empty' <<<"$fields")
+  if [ -z "$priority" ]; then
+    gh project field-create "$num" --owner "$OWNER" --name Priority \
+      --data-type SINGLE_SELECT --single-select-options "P0,P1,P2" >/dev/null
+    priority=$(jq -c '[.[] | select(.name == "Priority")][0]' <<<"$(project_fields "$pid")")
+  fi
+  set_options "$(jq -r .id <<<"$priority")" "$PRIORITY_OPTIONS" "$(jq -c .options <<<"$priority")"
+
+  views=$(gql 'query($id:ID!){ node(id:$id){ ... on ProjectV2 { views(first:20){ nodes{ name layout } } } } }' id="$pid")
+  if ! jq -e '.data.node.views.nodes[] | select(.layout == "BOARD_LAYOUT")' <<<"$views" >/dev/null; then
+    gql 'mutation($p:ID!){ createProjectV2View(input:{projectId:$p, name:"Board", layout:BOARD_LAYOUT}){ clientMutationId } }' p="$pid" >/dev/null
+  fi
+
+  echo "project $num $(gh project view "$num" --owner "$OWNER" --format json -q .url)"
+}
+
+item_id() { # number issue-url -> item id (adds the issue if missing)
+  gh project item-add "$1" --owner "$OWNER" --url "$2" --format json -q .id
+}
+
+field_option() { # project-id field-name option-name -> "field-id option-id"
+  project_fields "$1" | jq -r --arg f "$2" --arg o "$3" '
+    [.[] | select(.name == $f)][0] as $fld
+    | ($fld.options | map(select(.name == $o))[0].id) as $opt
+    | if $fld and $opt then "\($fld.id) \($opt)" else empty end'
+}
+
+set_field() { # number item-id field option
+  local pid fo
+  pid=$(project_id "$1")
+  fo=$(field_option "$pid" "$3" "$4")
+  [ -n "$fo" ] || die "no option $4 on field $3 (run: ck-github project)"
+  gh project item-edit --id "$2" --project-id "$pid" \
+    --field-id "${fo% *}" --single-select-option-id "${fo#* }" >/dev/null
+}
+
+cmd_add_item() {
+  [ $# -ge 2 ] || die "add-item needs <number> <issue-url> [priority]"
+  local item current
+  item=$(item_id "$1" "$2")
+  if [ -n "${3:-}" ]; then
+    current=$(gh project item-list "$1" --owner "$OWNER" --format json --limit 1000 \
+      | jq -r --arg id "$item" '.items[] | select(.id == $id) | .priority // empty')
+    if [ -z "$current" ]; then set_field "$1" "$item" Priority "$3"; fi
+  fi
+  echo "item $2 ${current:-${3:-}}"
+}
+
+cmd_set_status() {
+  [ $# -eq 3 ] || die "set-status needs <number> <issue-url> <status>"
+  set_field "$1" "$(item_id "$1" "$2")" Status "$3"
+  echo "status $2 $3"
+}
+
+cmd_items() {
+  [ $# -eq 1 ] || die "items needs <number>"
+  gh project item-list "$1" --owner "$OWNER" --format json --limit 1000 \
+    | jq -r '.items[] | select(.content.type == "Issue")
+        | [.content.number, (.status // ""), (.priority // ""), .content.title] | @tsv'
+}
+
+sub=${1:-}; shift || true
+case $sub in
+  labels)           cmd_labels "$@" ;;
+  milestones)       cmd_milestones "$@" ;;
+  reopen-milestone) cmd_reopen_milestone "$@" ;;
+  protect)          cmd_protect "$@" ;;
+  project)          cmd_project "$@" ;;
+  add-item)         cmd_add_item "$@" ;;
+  set-status)       cmd_set_status "$@" ;;
+  items)            cmd_items "$@" ;;
+  *) sed -n '2,15p' "$0" >&2; exit 2 ;;
+esac

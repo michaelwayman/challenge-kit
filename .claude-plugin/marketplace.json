@@ -1,0 +1,12 @@
+{
+  "name": "challenge-kit",
+  "description": "Local marketplace for the challenge-kit plugin",
+  "owner": { "name": "Michael Wayman" },
+  "plugins": [
+    {
+      "name": "challenge-kit",
+      "source": "./",
+      "description": "Take a coding challenge from its brief to a spec, GitHub-tracked milestones and parallel, reviewed work."
+    }
+  ]
+}
