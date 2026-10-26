@@ -18,7 +18,10 @@ Brief: `$ARGUMENTS`, or `CHALLENGE.md` if empty.
 - `gh repo view` works (a GitHub remote you can push to). If not, say so: steps 1–6 still run, step 7 needs it.
 
 ## 1. Research
-Run the full pass of the `challenge-kit:research` skill (agenda approval included). Everything below draws on `docs/research.md`.
+- `docs/research.md` doesn't exist: run the full pass of the `challenge-kit:research` skill (agenda approval included).
+- It exists: show its agenda table and date, and ask (AskUserQuestion, recommendation first): **reuse** it as is / **refresh** some topics (then run `challenge-kit:research <topics>`) / **redo** it (the full pass, replacing it). Never overwrite it without that answer.
+
+Everything below draws on `docs/research.md`.
 
 ## 2. Requirements and out of scope
 Draft from the brief and research:
@@ -58,6 +61,6 @@ Stop. Wait for the user's reply.
    - `.claude/settings.json` from `${CLAUDE_PLUGIN_ROOT}/templates/settings.json.tmpl`. `{{MARKETPLACE_SOURCE}}`: ask the user, recommendation first: `{"source": "github", "repo": "<owner>/challenge-kit"}` if the plugin is pushed there, else `{"source": "directory", "path": "${CLAUDE_PLUGIN_ROOT}"}`. If a settings.json exists, merge keys instead of overwriting.
    - `.github/ISSUE_TEMPLATE/task.md` from `${CLAUDE_PLUGIN_ROOT}/templates/issue-task.md` and `.github/pull_request_template.md` from `${CLAUDE_PLUGIN_ROOT}/templates/pr-template.md`.
    - Never overwrite the brief, an existing README.md or Makefile.
-2. Commit on a branch `kickoff-spec`, push, open a PR titled "Spec, contracts and agent setup". Ask the user to merge it (branch protection comes next, and main must hold SPEC.md for workers).
+2. Commit on a branch `kickoff-spec`: `docs/research.md`, `SPEC.md`, `docs/contracts/`, `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json` and `.github/`. Nothing else: check `git status` and ask about any other changed file. Push, open a PR titled "Spec, contracts and agent setup". Ask the user to merge it (branch protection comes next, and main must hold SPEC.md for workers).
 3. Once merged, run the `challenge-kit:sync-github` skill.
 4. Finish with: the Project URL, the issue count per milestone, and the next step: **"/challenge-kit:orchestrate"**. Remind the user to open this folder once in the Claude desktop app and accept the trust prompt, or worker sessions can't start.
