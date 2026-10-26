@@ -11,6 +11,8 @@
 #   ck-github add-item <number> <issue-url> [P0|P1|P2]  add an issue; sets Priority only if empty
 #   ck-github set-status <number> <issue-url> <status>  Todo | Ready | In progress | In review | Done
 #   ck-github items <number>                         TSV: issue number, status, priority, title
+#   ck-github sub-issue <parent> <child>             link child as a sub-issue of parent
+#   ck-github log <issue> <line>                     append "<UTC> · <line>" as a comment
 set -euo pipefail
 
 die() { echo "ck-github: $*" >&2; exit 1; }
@@ -53,6 +55,9 @@ cmd_labels() {
   label needs-triage  fbca04 "Proposed by an agent; waits for the user"
   label contract      5319e7 "Changes docs/contracts/; the orchestrator builds it"
   label integration   1d76db "Crosses services; the orchestrator builds it"
+  label stretch       c2e0c6 "Built only while the time box allows"
+  label bundled       ededed "Built through its bundle issue"
+  label log           ffffff "Progress log; not work"
   for l in "$@"; do
     case $l in
       service:*) label "$l" c5def5 "Service ${l#service:}" ;;
@@ -207,6 +212,24 @@ cmd_items() {
         | [.content.number, (.status // ""), (.priority // ""), .content.title] | @tsv'
 }
 
+cmd_sub_issue() {
+  [ $# -eq 2 ] || die "sub-issue needs <parent> <child>"
+  if gh api "repos/$REPO/issues/$1/sub_issues" --paginate -q '.[].number' | grep -qx "$2"; then
+    echo "sub-issue #$2 of #$1 (exists)"; return
+  fi
+  local id
+  id=$(gh api "repos/$REPO/issues/$2" -q .id) || die "no issue #$2"
+  gh api "repos/$REPO/issues/$1/sub_issues" -F sub_issue_id="$id" >/dev/null \
+    || die "linking #$2 under #$1 failed"
+  echo "sub-issue #$2 of #$1 (linked)"
+}
+
+cmd_log() {
+  [ $# -eq 2 ] || die "log needs <issue> <line>"
+  gh issue comment "$1" --body "$(date -u +%FT%TZ) · $2" >/dev/null || die "log to #$1 failed"
+  echo "log #$1"
+}
+
 sub=${1:-}; shift || true
 case $sub in
   labels)           cmd_labels "$@" ;;
@@ -217,5 +240,7 @@ case $sub in
   add-item)         cmd_add_item "$@" ;;
   set-status)       cmd_set_status "$@" ;;
   items)            cmd_items "$@" ;;
+  sub-issue)        cmd_sub_issue "$@" ;;
+  log)              cmd_log "$@" ;;
   *) sed -n '2,15p' "$0" >&2; exit 2 ;;
 esac

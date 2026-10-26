@@ -2,12 +2,12 @@
 name: integrate
 description: Use when the build milestones are closed (or the user asks) to check the real services against their contracts and smoke-test the whole system end to end.
 disable-model-invocation: true
-allowed-tools: Bash(gh issue *) Bash(gh pr *) Bash(gh api *) Bash(make *) Bash(curl *) Bash(git *) Bash(ck-github *)
+allowed-tools: Bash(gh issue *) Bash(gh pr *) Bash(gh api *) Bash(make *) Bash(curl *) Bash(git *) Bash(ck-github *) Bash(date *)
 ---
 
 # Integrate
 
-Prove the pieces work together. Run from the orchestrator session, on up-to-date main.
+Prove the pieces work together. Run from the orchestrator session, on up-to-date main. Depth follows the grade in SPEC.md (`${CLAUDE_PLUGIN_ROOT}/rules/grades.md`): demo runs steps 1, 4, 6, 7 and 8; solid adds 2; production runs everything.
 
 1. **Bring it up**: `make up` (or what AGENTS.md/README names). Wait until each service answers; if one won't start, that's the first finding.
 2. **Contracts against real providers**: for each contract in SPEC.md, send every case in `docs/contracts/<name>/examples/` to the real provider and compare: status, fields, types, nullability, error bodies. Then every documented error the examples don't cover.
@@ -16,3 +16,4 @@ Prove the pieces work together. Run from the orchestrator session, on up-to-date
 5. **Keep it**: turn steps 2–4 into `make test-integration`, run by `make check` or CI, on a branch with a PR (an Integration issue; open one if none exists).
 6. **File failures**: one issue per failure, from the task template, labelled `needs-triage`, `service:<s>`, `req:R<n>`, in that service's milestone (`ck-github reopen-milestone` if closed), added to the Project with Status Todo. A contract mismatch where the doc is wrong is a `contract` issue instead.
 7. **Report**: per contract and per R, pass or the filed issue. Tell the user to triage (remove `needs-triage` from the ones to build) and then run `/challenge-kit:orchestrate`. When all passes, close the Integration milestone.
+8. **Retro**: `ck-github log <log-issue>` one comment: estimate vs actual per R and milestone, the final calibration factor, the speed levers used, what was cut or left in stretch, and finish time vs deadline.

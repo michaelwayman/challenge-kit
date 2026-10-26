@@ -16,7 +16,9 @@ SPEC.md is the source of truth; GitHub mirrors it. This skill is idempotent: run
 - Services → `service:<s>` labels. Active and removed R → `req:R<n>` labels (keep labels of removed Rs; closed issues still carry them).
 - Milestones: `M<n> <name>` titles, exactly as SPEC.md's Milestones table names them.
 - Issues: break each active R into issues. One issue = one service, one layer, about one PR: an endpoint, the page that shows it, a build step and a component are separate issues. Scaffolding, CI and each contract's mock are Integration issues. Each issue body follows `${CLAUDE_PLUGIN_ROOT}/templates/issue-task.md`, including its first line `<!-- ck:R<n>:<slug> -->` (slug: kebab-case, stable, unique within the R). Integration issues use `ck:M<n>:<slug>`.
-- Priority: the R's priority unless the user set another for the issue.
+- Priority: the R's priority unless the user set another for the issue. Issues of a Stretch R get the `stretch` label.
+- Estimate: each issue's share of its R's size (S/M/L); an R's `Grade:`/`Speed:` override is copied into its issues.
+- The **Progress log**: one issue titled "Progress log", labelled `log`, marker `<!-- ck:log -->`, never `ready`, not on the Project. Its number goes into SPEC.md's header (`{{LOG_ISSUE}}`).
 - Dependencies: `Depends on:` other issues' slugs until they have numbers. An issue with an open dependency is `blocked`, otherwise `ready`.
 
 ## 3. Read the current state
@@ -34,10 +36,11 @@ Never in the diff:
 ## 5. Apply, in this order
 1. `ck-github labels service:<s>... req:R<n>...`
 2. `ck-github milestones "<M title>"...`; `ck-github reopen-milestone "<title>"` for each closed milestone that gets new open work
-3. `ck-github protect check` (only on the first run, or when the user asks)
+3. `ck-github protect check` (only on the first run and only at production grade, or when the user asks)
 4. `ck-github project "<repo name> challenge-kit" [number]`. If it printed a new number, write it and the URL into SPEC.md's header line
 5. Issues: create (`gh issue create --title --body-file --milestone --label`), then a second pass that rewrites `Depends on:` slugs as `#<n>`. Update with `gh issue edit --body-file` (fetch the body, edit only the sections that changed, keep the Decisions rows). Close with `gh issue close --reason "not planned" --comment`
-6. For every issue: `ck-github add-item <number> <issue-url> <P>` then `ck-github set-status <number> <issue-url> <Ready|Todo>` to match its label (Todo for blocked and needs-triage)
+6. Progress log: create it if missing (`gh issue create --label log`), then `gh issue pin <n>`; write its number into SPEC.md's header with the Project number.
+7. For every issue except the Progress log: `ck-github add-item <number> <issue-url> <P>` then `ck-github set-status <number> <issue-url> <Ready|Todo>` to match its label (Todo for blocked and needs-triage)
 
 Use body files in your scratchpad, never inline heredocs with backticks.
 

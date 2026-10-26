@@ -6,17 +6,34 @@ IDs (R, O, T, M) are stable: never renumber, never reuse. A removed requirement 
 Brief: {{BRIEF_PATH}} (read-only). Research: docs/research.md.
 -->
 
-GitHub Project: {{PROJECT_URL}} (number {{PROJECT_NUMBER}})
+GitHub Project: {{PROJECT_URL}} (number {{PROJECT_NUMBER}}) · Progress log: {{LOG_ISSUE}}
+
+## Time box and grade
+
+<!-- Set by kickoff, changed by /challenge-kit:replan. Definitions: the plugin's rules/grades.md. -->
+
+| Setting | Value |
+|---|---|
+| Time box | {{HOURS}}h, started {{START_UTC}}, deadline {{DEADLINE_UTC}} |
+| Available hours | {{HOURS}} (working hours before the deadline) |
+| Grade | {{demo / solid / production}} |
+| Research depth | {{light / standard / deep}} |
+| Contract depth | {{sketch / full}} |
+| Delivery | {{small PRs / few big PRs}} |
+| Speed | {{none / planning: batch, auto-approve: S, ...}} |
+| Calibration factor | 1.0 |
+| Stretch | {{R… started only while time remains, or none}} |
 
 ## Requirements
 
-<!-- One per capability. Priority: P0 | P1 | P2. Status: active | removed (YYYY-MM-DD, reason). -->
+<!-- One per capability. Priority: P0 | P1 | P2. Status: active | removed (YYYY-MM-DD, reason). Optional overrides from replan: `Grade: <g> (override)`, `Speed: <levers>`. -->
 
 ### R1. {{Capability, as something a user or caller can do}}
 - Source: {{BRIEF_PATH}} § {{section}}
 - Priority: P0
 - Status: active
 - Milestone: M1
+- Estimate: {{S / M / L}} (~{{minutes}} min)
 - Acceptance:
   - {{Observable, testable statement}}
 

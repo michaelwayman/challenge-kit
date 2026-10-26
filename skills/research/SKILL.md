@@ -27,12 +27,12 @@ Ask the user what should steer the research: performance targets, scale, build s
 - **constraint**: a must, from the brief or the user ("handle 100 users/minute"). Options that fail it are out.
 - **preference**: traded off against the others, with a weight high / medium / low ("fastest framework", "fast CI builds").
 
-Ask the kind and weight when the user doesn't say. Read the brief for constraints the user didn't mention and propose them. A priority never decides a topic on its own: it is one input to every topic's evaluation.
+Ask the kind and weight when the user doesn't say. Read the brief for constraints the user didn't mention and propose them. If kickoff passed a time box and grade, or SPEC.md has them, they are a constraint row ("fits 4h at demo grade"): prefer options that are quick to set up and that the grade doesn't over-serve. A priority never decides a topic on its own: it is one input to every topic's evaluation.
 
 With `steer`: add or change that priority, then re-evaluate every topic it touches (step 4 for those topics, with the new priority) before step 5.
 
 ## 3. Agenda
-Propose 4–8 topics, each informing at least one decision the spec will make: the source data or existing system, what the brief evaluates or leaves open, each deliverable's technology options, integration points, risks. Show: # · Topic · Decisions it informs · Priorities it bears on · Focus questions. The user approves, edits, drops or adds (AskUserQuestion, recommendation first). Dispatch nothing before approval.
+Propose topics by research depth (`${CLAUDE_PLUGIN_ROOT}/rules/grades.md`; standard if none was set): light 2–3, standard 4–6, deep up to 8. Each informs at least one decision the spec will make: the source data or existing system, what the brief evaluates or leaves open, each deliverable's technology options, integration points, risks. Show: # · Topic · Decisions it informs · Priorities it bears on · Focus questions. The user approves, edits, drops or adds (AskUserQuestion, recommendation first). Dispatch nothing before approval.
 
 ## 4. Research topics
 Dispatch one `challenge-kit:researcher` per topic, all in one message. Each prompt: the topic, the decisions it informs, the brief's path, the focus questions, **the full Priorities table**, and "return the topic format in your instructions". Write each returned section into `docs/research.md` in agenda order. Where two sections contradict, check the evidence yourself and say which held.

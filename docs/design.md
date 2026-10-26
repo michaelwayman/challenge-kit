@@ -129,3 +129,6 @@ It knows nothing about any one challenge: a guided **research** step learns each
   - Run change-spec and check that issues get closed and relabelled and that Project items are updated.
   - Run the orchestrate pick order against that Project, without starting workers, and check it lists P0 ready issues first.
 - Lanes, review-pr and integrate are verified on the first real run.
+
+## Addendum: time box, grade, replan and bundle (2026-10-26)
+Kickoff now takes a wall-clock time box, a grade (demo / solid / production), research and contract depth, and a delivery shape, recorded in SPEC.md's "Time box and grade" section. `rules/grades.md` is the single definition the skills read: what each grade builds, tests and reviews; S/M/L estimates with a grade multiplier and a calibration factor; the reserve; and the speed levers. Kickoff's fit check and the orchestrator's clock check offer process levers (planning, per-ticket effort, parallelism) before grade, and grade before scope; the user picks every change. `replan` changes time, grade or speed for the project or, as overrides, for chosen Rs. `bundle` links planned issues as sub-issues of one bundle issue built in one PR, one per service by default; crossing a service boundary needs the user's explicit yes. Time is logged on a pinned Progress log issue, so nothing is pushed to main for logging.

@@ -15,6 +15,8 @@ Touches: {{paths, one service}}
 Depends on: {{#n, #m | none}}
 Contract: {{docs/contracts/<name>.md | none}}
 Budget: {{~files, ~lines}}
+Estimate: {{S / M / L}} (~{{minutes}} min)
+<!-- Optional, from replan: Grade: <g> (override) · Speed: <levers> -->
 
 ## My reading of {{R<n>}}
 {{One sentence: how this issue interprets the requirement. The user approves this with the plan}}

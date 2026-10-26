@@ -13,12 +13,13 @@ You are a worker. You build issue #$issue in this worktree, open one PR, and sto
 !`gh issue view $issue`
 
 ## 1. Read
-- The issue above (if it didn't load, run `gh issue view $issue`): Goal, `Delivers:`, `Touches:`, `Depends on:`, `Contract:`, `Budget:`, "My reading of", Decisions, acceptance criteria, Out of scope.
+- The issue above (if it didn't load, run `gh issue view $issue`): Goal, `Delivers:`, `Touches:`, `Depends on:`, `Contract:`, `Budget:`, `Estimate:`, any `Grade:`/`Speed:` override, "My reading of", Decisions, acceptance criteria, Out of scope.
+- A **bundle** issue (`Bundles:` line): its checklist is your order. Build each bundled issue to its own reading, Decisions and acceptance, one commit per item, ticking the checklist. `Crosses boundaries: no` means `Touches:` stays per service exactly as for single issues.
 - `SPEC.md`: the delivered R (acceptance bullets) and the whole Out of scope list.
-- The root `AGENTS.md` and the `AGENTS.md` nearest each `Touches:` path. Its Working, Review and Learned rules bind you.
+- The root `AGENTS.md` and the `AGENTS.md` nearest each `Touches:` path. Its Working, Grade, Speed, Review and Learned rules bind you; the issue's override wins over the project's Grade and Speed rules. Build to the grade: no more, no less.
 - The contract doc and its `examples/`, if `Contract:` names one.
 
-Stop and message the orchestrator (SendMessage) instead of building if: the issue lacks the `plan-approved` label, or a `Depends on:` issue is still open.
+Stop and message the orchestrator (SendMessage) instead of building if: the issue lacks the `plan-approved` label (unless Speed says `planning: self`), or a `Depends on:` issue is still open.
 
 ## 2. Branch
 `git fetch origin && git rebase origin/main`. If on main, `git switch -c <issue>-<two-words> --no-track`.
@@ -29,7 +30,7 @@ Make the how-to decisions inside `Touches:` yourself, and add them as rows to th
 - adds a capability `Delivers:` doesn't cover, or touches anything on the Out of scope lists
 - changes a contract, or needs a path outside `Touches:`
 
-Then build. If "My reading of R<n>" turns out wrong once you're in the code, stop and say so; don't build your own reading.
+With `planning: self`, write your one-sentence reading of R<n> into the issue first, then build. If "My reading of R<n>" turns out wrong once you're in the code, stop and say so; don't build your own reading.
 
 ## 4. Build and check
 - Code and tests together; run the targets you touch while working. If a project skill or `AGENTS.md` names a project-specific skill for this work, use it.
@@ -42,7 +43,7 @@ Dispatch `challenge-kit:reviewer` and `challenge-kit:contract-checker` in one me
 
 ## 6. Ship
 - `git push -u origin HEAD`
-- `gh pr create --base main --title "<issue title> (#$issue)" --body-file <file>`, the body following `.github/pull_request_template.md`: `Closes #$issue`, Verification (what you ran, what it printed), Size (budget vs actual), Review (each finding and what happened), Calls I made.
+- `gh pr create --base main --title "<issue title> (#$issue)" --body-file <file>`, the body following `.github/pull_request_template.md`: `Closes #$issue` (a bundle: also `Closes #n` for every bundled issue), Verification (what you ran, what it printed), Size (budget vs actual, estimate vs actual minutes), Review (each finding and what happened), Calls I made.
 - `bind_pr` with the PR, then `set_monitor` with Auto-fix on.
 - `ck-github set-status <project-number> <issue-url> "In review"` (project number: SPEC.md header).
 

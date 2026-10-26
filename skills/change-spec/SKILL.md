@@ -22,6 +22,9 @@ Restate the request as a list of operations, each on a stable ID:
 | move O → in scope | add an R that says "was O<n>"; strike the O with "now R<n>" |
 | change T or a boundary | edit the row; list every contract and service it touches |
 | change priority | edit the R or M priority |
+| move R → stretch | priority P2, listed under Stretch in "Time box and grade" |
+
+Time box, deadline, grade or speed changes are not operations here: hand them to `challenge-kit:replan`. A new or altered R gets a size (S/M/L) and Estimate; the impact table shows the new fit (rules/grades.md § Estimates).
 
 IDs are never renumbered or reused. If the request is ambiguous (which R? narrower or wider?), ask before going further: AskUserQuestion, recommendation first.
 
