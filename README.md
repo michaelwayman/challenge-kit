@@ -39,6 +39,7 @@ Anytime:
 | You want to | Run |
 |---|---|
 | Add, drop, change or clarify a requirement; move something in or out of scope; change a tech choice | `/challenge-kit:change-spec "<the change>"` |
+| Report a bug or small fix in merged work (filed already triaged) | `/challenge-kit:report "<what's wrong>"` |
 | Research or re-research a topic | `/challenge-kit:research <topic>` |
 | Ask a follow-up research question (recorded in `docs/research.md`) | `/challenge-kit:research ask "which is faster here, A or B?"` |
 | Steer research with a priority (weighed, not a mandate) | `/challenge-kit:research steer "handle 100 users/minute"` |
@@ -79,7 +80,7 @@ Everything time-related is logged as comments on a pinned **Progress log** issue
 
 | In the plugin (this repo) | In the project repo |
 |---|---|
-| `skills/`: kickoff, research, change-spec, replan, bundle, sync-github, orchestrate, work-issue, review-pr, integrate, record-correction, eject | `SPEC.md`: the single source of truth, with stable IDs (R, O, T, M) and a changelog |
+| `skills/`: kickoff, research, change-spec, report, replan, bundle, sync-github, orchestrate, work-issue, review-pr, integrate, record-correction, eject | `SPEC.md`: the single source of truth, with stable IDs (R, O, T, M) and a changelog |
 | `agents/`: researcher, reviewer, contract-checker (read-only, Sonnet) | `docs/research.md`: findings with evidence |
 | `templates/`: SPEC, AGENTS, research, settings, issue, PR | `docs/contracts/`: one doc + examples per boundary |
 | `rules/working-rules.md`, `rules/grades.md`: generic rules, grades and speed levers | `AGENTS.md` (+ `CLAUDE.md` symlink): working, review and learned rules for this project |
@@ -92,5 +93,6 @@ Agents run inside the project repo, so they follow its `AGENTS.md`. Feedback tha
 - **Before code**: each round's table shows how the planner reads each requirement and a size budget. A misreading is a sentence you correct, not a PR.
 - **Before the PR**: the worker stays inside `Touches:`, checks its diff against the budget, and runs the reviewer. The reviewer treats a misreading, scope creep and anything out of scope as findings.
 - **After the PR**: review-pr posts an independent review. Comment on the PR (Auto-fix acts on it), `orchestrate redo <n>`, or fix the requirement itself with `change-spec`.
+- **After the merge**: `/challenge-kit:report "<what's wrong>"` files a bug as a ready issue for the next round.
 
 Design notes: [docs/design.md](docs/design.md).

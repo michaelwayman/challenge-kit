@@ -135,3 +135,6 @@ Kickoff now takes a wall-clock time box, a grade (demo / solid / production), re
 
 ## Addendum: issue size (2026-10-27)
 The ck-dryrun run created 36 issues at kickoff (one per service and layer), then bundled 27 of them back into 6 issues to ship them. sync-github now creates **one issue per service per milestone** by default, with the pieces as a checklist inside, so issues match how work is actually built and reviewed. Kickoff's former "Delivery" question is now **Issue size**: per milestone (default) or fine, recorded in SPEC.md. Fine keeps the old behaviour, and `bundle` applies only to it.
+
+## Addendum: report (2026-10-27)
+Bugs in merged work had no route: filing by hand meant getting labels and milestones right, and asking the orchestrator made the issue `needs-triage`, so the user triaged their own report. `report` takes a plain-words bug or small fix, sends anything beyond an R's acceptance to change-spec, and otherwise files one issue per service from the task template, already triaged (`ready` or `blocked`, `service:` and `req:` labels, milestone reopened if needed, on the Project), after the user confirms the draft. Its `ck:report:` marker keeps sync-github from rewriting it.

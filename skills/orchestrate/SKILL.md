@@ -53,11 +53,12 @@ For each lane, start the next approved issue when the lane has a free slot (2, o
 4. Answer questions, by kind (SendMessage to the worker):
    - how to build inside its service → "decide, log it under Calls I made"
    - new capability, out-of-scope item, or a misread requirement → `challenge-kit:change-spec`; tell the worker to pause or stop
+   - a bug in merged work (from a worker or the user) → `challenge-kit:report`
    - contract change → open a `contract` issue (additive and needed by an approved plan: you build it; otherwise `needs-triage` and ask the user)
    - over budget → ask the user: raise the budget or cut back; if the overrun breaks the fit, `challenge-kit:replan`
    - marked `ask` or crossing a boundary → AskUserQuestion, then answer
 5. Tell the user which PRs are ready to merge, and to say "I merged #n" (or rerun `/challenge-kit:orchestrate`) after merging: nothing wakes you on a merge.
 
 ## Rules
-- New issues you open get `needs-triage`, never `ready`.
+- New issues you open get `needs-triage`, never `ready`, and always their `service:` and `req:R<n>` labels. A bug the user reports goes through `challenge-kit:report`, which files it already triaged.
 - Never edit SPEC.md or contracts directly; change-spec and contract issues do.
