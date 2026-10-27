@@ -22,7 +22,7 @@ Record the start: `date -u +%FT%TZ`. Ask in one AskUserQuestion (skip the questi
 - **Time box**: 2h / 4h / 8h (Other for any amount or a deadline). If the deadline is more than one working session away, ask for the working hours before it.
 - **Grade**: solid (Recommended) / demo / production, with one line each from rules/grades.md.
 - **Research and contract depth**: the grade's defaults (Recommended) / deep research and full contracts / light research and sketch contracts.
-- **Delivery**: small PRs (Recommended) / few big PRs (bundled per service after sync).
+- **Issue size**: one issue per service per milestone, the pieces as a checklist inside (Recommended: fewest issues, plan passes and PRs) / fine-grained: one issue per service and layer (more workers can run at once, at the cost of many more issues, plans and PRs).
 
 Keep these for SPEC.md's "Time box and grade" section. They shape every step below, and the final review lists them.
 
@@ -59,7 +59,7 @@ Per rules/grades.md § Estimates (time already spent on research counts). Show: 
 If it doesn't fit, first offer the speed levers from rules/grades.md (AskUserQuestion, multiSelect, process levers first, each with its saving here), and re-run the fit. Then, for the rows still below the line, the user picks per R: **stretch** (P2, built only while time remains), **cut** (becomes an O, "cut for time"), or **keep** (needs more hours). Never cut without the user's pick. The chosen levers become the Speed setting.
 
 ## 5. Final review
-Show **one table of every choice**: the time box, grade, research and contract depth, delivery and speed settings, the fit summary; each R (with priority, size and milestone), each O, each service boundary, each contract, each T, each M. Columns: ID · Choice · Why · Source (brief §, research §, or "you"). Ask the user to change any row. Apply edits and show the table again until they have none.
+Show **one table of every choice**: the time box, grade, research and contract depth, issue size and speed settings, the fit summary; each R (with priority, size and milestone), each O, each service boundary, each contract, each T, each M. Columns: ID · Choice · Why · Source (brief §, research §, or "you"). Ask the user to change any row. Apply edits and show the table again until they have none.
 
 ## 6. Write locally, then the ready gate
 - Write `SPEC.md` from `${CLAUDE_PLUGIN_ROOT}/templates/SPEC.md.tmpl` (header line keeps `{{PROJECT_URL}}`/`{{PROJECT_NUMBER}}`/`{{LOG_ISSUE}}` until sync-github fills them), with "Time box and grade" filled in and a changelog row "Initial spec".
@@ -77,6 +77,6 @@ Stop. Wait for the user's reply.
    - `.github/ISSUE_TEMPLATE/task.md` from `${CLAUDE_PLUGIN_ROOT}/templates/issue-task.md` and `.github/pull_request_template.md` from `${CLAUDE_PLUGIN_ROOT}/templates/pr-template.md`.
    - Never overwrite the brief, an existing README.md or Makefile.
 2. Commit on a branch `kickoff-spec`: `docs/research.md`, `SPEC.md`, `docs/contracts/`, `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json` and `.github/`. Nothing else: check `git status` and ask about any other changed file. Push, open a PR titled "Spec, contracts and agent setup". Ask the user to merge it (branch protection comes next, and main must hold SPEC.md for workers).
-3. Once merged, run the `challenge-kit:sync-github` skill. If delivery is "few big PRs", then run `challenge-kit:bundle`.
+3. Once merged, run the `challenge-kit:sync-github` skill. It creates issues at the chosen issue size.
 4. `ck-github log <log-issue> "kickoff · <n>h <grade> · start <UTC> · deadline <UTC> · <R count> Rs, fit <work left> of <time left>"`.
 5. Finish with: the Project URL, the issue count per milestone, the time left, and the next step: **"/challenge-kit:orchestrate"**. Remind the user to open this folder once in the Claude desktop app and accept the trust prompt, or worker sessions can't start.

@@ -5,7 +5,7 @@ Project-agnostic rules every challenge-kit session follows. Kickoff copies them 
 ## Scope
 - Build only what the issue's `Delivers: R<n>` and its approved Decisions cover. A new capability is a question for `change-spec`, not a call you make
 - Nothing on SPEC.md's out-of-scope list (`O<n>`) gets built, even partly
-- Stay inside the issue's `Touches:` paths: one service, one layer. An endpoint, the page that shows it, a build step and a component are separate issues
+- Stay inside the issue's `Touches:` paths: one service. A per-milestone issue covers its whole checklist in that service; a fine-grained issue is also one layer (an endpoint, the page that shows it, a build step and a component are separate issues)
 - Stay inside the size budget. Well over it means stop and ask, not open the PR
 - List every choice the issue didn't decide under "Calls I made" in the PR
 

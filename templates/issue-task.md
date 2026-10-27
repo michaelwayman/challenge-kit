@@ -1,16 +1,16 @@
 ---
 name: Task
-about: One issue, one service, one layer, about one PR
+about: One service, one PR. Per-milestone issues list their pieces in a Checklist
 title: ""
 labels: []
 ---
 
-<!-- ck:{{R}}:{{slug}} -->
+<!-- ck:{{M<n>:<service> | R<n>:<slug>}} -->
 
 ## Goal
 {{One or two sentences: what exists when this is done}}
 
-Delivers: {{R<n>}}
+Delivers: {{R<n>, ...}}
 Touches: {{paths, one service}}
 Depends on: {{#n, #m | none}}
 Contract: {{docs/contracts/<name>.md | none}}
@@ -18,8 +18,12 @@ Budget: {{~files, ~lines}}
 Estimate: {{S / M / L}} (~{{minutes}} min)
 <!-- Optional, from replan: Grade: <g> (override) · Speed: <levers> -->
 
-## My reading of {{R<n>}}
-{{One sentence: how this issue interprets the requirement. The user approves this with the plan}}
+## My reading of {{R<n>, ...}}
+{{One sentence per R: how this issue interprets the requirement. The user approves this with the plan}}
+
+## Checklist
+<!-- Per-milestone issues only (delete for fine-grained). Dependency order; one commit per item; tick it when its acceptance passes. -->
+- [ ] {{piece}} ({{R<n>}}): {{its acceptance bullets}}
 
 ## Decisions
 

@@ -30,7 +30,7 @@ Needs `gh` (with the `project` scope: `gh auth refresh -s project`) and `jq`. Wh
 
 ## The flow
 
-1. **`/challenge-kit:kickoff [brief] [4h] [demo|solid|production]`**. Asks for the time box, grade, research and contract depth, and delivery shape (see below). Reads the brief (`CHALLENGE.md` by default) and the repo, then runs research. Drafts `SPEC.md` (requirements, out of scope, services and boundaries, contracts, technology choices, milestones with priorities) and asks about every gap. Checks the plan fits the time box, offering speed-ups before cuts. Shows one table of every choice for a final review. Writes locally and **waits for you to say `ready`**. Then it renders `AGENTS.md`, `.claude/settings.json` and the GitHub templates, opens a PR, and runs sync-github once it merges.
+1. **`/challenge-kit:kickoff [brief] [4h] [demo|solid|production]`**. Asks for the time box, grade, research and contract depth, and issue size (see below). Reads the brief (`CHALLENGE.md` by default) and the repo, then runs research. Drafts `SPEC.md` (requirements, out of scope, services and boundaries, contracts, technology choices, milestones with priorities) and asks about every gap. Checks the plan fits the time box, offering speed-ups before cuts. Shows one table of every choice for a final review. Writes locally and **waits for you to say `ready`**. Then it renders `AGENTS.md`, `.claude/settings.json` and the GitHub templates, opens a PR, and runs sync-github once it merges.
 2. **`/challenge-kit:orchestrate`**. Each round, it proposes the next issues in priority order, one table per milestone lane. Each row shows its reading of the requirement, its key decisions and its size budget, and you approve or change them. It then starts up to two worker sessions per lane, each in its own worktree, answers their questions and reviews their PRs. You merge, then say "I merged #n".
 3. **`/challenge-kit:integrate`**. Once the build milestones close: contracts against the real services, an end-to-end smoke test, and failures filed as issues for you to triage.
 
@@ -43,7 +43,7 @@ Anytime:
 | Ask a follow-up research question (recorded in `docs/research.md`) | `/challenge-kit:research ask "which is faster here, A or B?"` |
 | Steer research with a priority (weighed, not a mandate) | `/challenge-kit:research steer "handle 100 users/minute"` |
 | Change the deadline, hours or grade, for everything or part | `/challenge-kit:replan "the deadline is tomorrow"` / `replan R3 R5 "demo grade is fine"` |
-| Ship many planned issues as a few PRs (e.g. one per service) | `/challenge-kit:bundle` / `bundle undo 42` |
+| Ship many fine-grained issues as a few PRs (e.g. one per service) | `/challenge-kit:bundle` / `bundle undo 42` |
 | Re-sync GitHub with SPEC.md | `/challenge-kit:sync-github` |
 | Stop or redo a worker's issue | `/challenge-kit:orchestrate stop 42` / `redo 42` |
 | Turn a correction into a rule | `/challenge-kit:record-correction "<what went wrong>"` |
@@ -61,9 +61,9 @@ Kickoff asks for five settings, stored in SPEC.md under "Time box and grade" (de
 | Grade | **demo** (happy path that runs) · **solid** (take-home quality: core and error-path tests, CI) · **production** (edge cases, validation, observability, branch protection) |
 | Research depth | light (2–3 topics) · standard (4–6) · deep (up to 8, benchmarks) |
 | Contract depth | sketch · full (every error, examples, mocks) |
-| Delivery | small PRs · few big PRs (planned as usual, then bundled per service) |
+| Issue size | per milestone (default: one issue per service per milestone, pieces as a checklist) · fine (one issue per service and layer; more parallel workers, many more issues) |
 
-Up-front depth is independent of the grade: deep research and full contracts can still ship as three big demo-grade PRs.
+Up-front depth is independent of the grade: deep research and full contracts can still ship as a few per-milestone demo-grade PRs.
 
 Every R and issue gets an S/M/L estimate. Kickoff's fit check and the orchestrator's clock check (on each wake) compare work left with time left. The estimates calibrate against how long merged issues really took. When the work stops fitting, `replan` offers speed levers before any cut:
 - **planning**: batch-plan a milestone, auto-approve S plans, or let workers plan themselves;

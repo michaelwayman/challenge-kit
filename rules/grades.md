@@ -43,9 +43,9 @@ Kickoff (and replan, on a grade change) copies the bullets for the project's gra
 |---|---|
 | Research depth | **light**: 2–3 topics, repo first, web only for a choice that is actually open, follow-up loop offered once · **standard**: 4–6 topics · **deep**: up to 8 topics, web benchmarks with stated conditions, follow-up loop until `done` |
 | Contract depth | **sketch**: operations, fields and status codes · **full**: every error, an `examples/` file per case, a mock per contract as an Integration issue |
-| Delivery shape | **small PRs**: one issue per capability and layer, one PR each · **few big PRs**: plan every issue as usual, then `challenge-kit:bundle` groups them, one bundle per service by default |
+| Issue size | **per milestone** (default): one issue per service per milestone, its pieces as a checklist, one PR each · **fine**: one issue per capability and layer, one PR each; `challenge-kit:bundle` can regroup them later |
 
-Up-front depth is independent of grade: deep research and full contracts with a demo build and few big PRs is a valid combination.
+Up-front depth is independent of grade: deep research and full contracts with a demo build and per-milestone issues is a valid combination.
 
 ## Estimates
 - Size per R and per issue: **S** 20, **M** 45, **L** 90 agent wall-clock minutes, times the grade multiplier, times the calibration factor (SPEC.md; starts at 1.0).
@@ -64,7 +64,7 @@ Offered by kickoff's fit check and by replan, before any cut. Savings are rough;
 | Planning | Self-planning | no Plan agents; the worker writes its reading and decisions into the PR, and stops only on `ask` rows | ~5 min per issue | `planning: self` |
 | Per-ticket effort | Minimal implementation | size budgets × 0.7; meet the acceptance bullets and nothing more, same grade | ~25% per issue | `budget-factor: 0.7` |
 | Per-ticket effort | One review pass | the worker's reviewer only; review-pr runs only when the reviewer reported gaps | ~5 min per PR | `review: single` |
-| Per-ticket effort | Bundle tickets | several issues, one worker, one PR (runs `bundle`) | ~10 min per issue folded in | `delivery: few big PRs` |
+| Per-ticket effort | Bundle tickets | fine-grained issues only: several issues, one worker, one PR (runs `bundle`) | ~10 min per issue folded in | bundles on GitHub |
 | Parallelism | More slots | up to 3 workers per lane where `Touches:` don't overlap | divides work left | `slots-per-lane: 3` |
 | Quality | Lower the grade | e.g. production → solid | the multiplier ratio | `grade:` |
 | Scope | Cut or stretch Rs | lowest priority and least depended-on first | that R's estimate | change-spec operations |

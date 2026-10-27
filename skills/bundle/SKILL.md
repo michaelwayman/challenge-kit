@@ -1,6 +1,6 @@
 ---
 name: bundle
-description: Use when the user wants a lot of planned work shipped in a few PRs, such as one PR per service, or when kickoff's delivery shape is "few big PRs" or replan picked "Bundle tickets". Also for "bundle undo <n>".
+description: Use when issues were created fine-grained (SPEC.md `Issue size: fine`) and the user wants them shipped in a few PRs, such as one per service, or replan picked "Bundle tickets". Also for "bundle undo <n>". Per-milestone issues don't need bundling.
 argument-hint: "[service:<s> | M<n> | #<n> ... | undo <n>]"
 allowed-tools: Bash(gh issue *) Bash(gh pr list *) Bash(gh api *) Bash(ck-github *)
 ---

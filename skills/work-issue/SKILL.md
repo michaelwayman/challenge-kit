@@ -14,6 +14,7 @@ You are a worker. You build issue #$issue in this worktree, open one PR, and sto
 
 ## 1. Read
 - The issue above (if it didn't load, run `gh issue view $issue`): Goal, `Delivers:`, `Touches:`, `Depends on:`, `Contract:`, `Budget:`, `Estimate:`, any `Grade:`/`Speed:` override, "My reading of", Decisions, acceptance criteria, Out of scope.
+- An issue with a **Checklist** (per-milestone issues): build the items in order to their acceptance bullets, one commit per item, ticking each in the issue body as it passes.
 - A **bundle** issue (`Bundles:` line): its checklist is your order. Build each bundled issue to its own reading, Decisions and acceptance, one commit per item, ticking the checklist. `Crosses boundaries: no` means `Touches:` stays per service exactly as for single issues.
 - `SPEC.md`: the delivered R (acceptance bullets) and the whole Out of scope list.
 - The root `AGENTS.md` and the `AGENTS.md` nearest each `Touches:` path. Its Working, Grade, Speed, Review and Learned rules bind you; the issue's override wins over the project's Grade and Speed rules. Build to the grade: no more, no less.
