@@ -37,14 +37,15 @@ With `planning: self`, write your one-sentence reading of R<n> into the issue fi
 - Code and tests together; run the targets you touch while working. If a project skill or `AGENTS.md` names a project-specific skill for this work, use it.
 - Commit. Run `make check` once. It must pass.
 - `git diff --name-only origin/main...HEAD`: every file must be under a `Touches:` path.
+- **Screenshots** (the delivered R has `Visual:` bullets): run the UI (the app, or the contract mock or host page if the provider isn't built yet) and `make screenshots` for every state and width the grade's UI checks require (`${CLAUDE_PLUGIN_ROOT}/rules/grades.md`), into `.ck/screenshots/$issue/<state>-<width>.png`. Look at each one yourself against the `Visual:` bullets and fix what misses before review. No `make screenshots` target: stop and message the orchestrator to add it as an Integration issue.
 - **Budget**: compare `git diff --stat origin/main...HEAD` totals to `Budget:`. More than 1.5× the lines or files: stop, cut back, or message the orchestrator with the reason and the number. Don't open the PR over budget without the orchestrator's go-ahead.
 
 ## 5. Review
-Dispatch `challenge-kit:reviewer` and `challenge-kit:contract-checker` in one message, each with the issue number and the base `origin/main`. If the repo has its own `.claude/agents/reviewer.md` or `contract-checker.md`, use those instead (an ejected copy). Fix every finding, or note why you disagree. Re-run `make check` if you changed code.
+Dispatch `challenge-kit:reviewer` and `challenge-kit:contract-checker` in one message, each with the issue number and the base `origin/main`, plus the screenshots folder for a UI issue. If the repo has its own `.claude/agents/reviewer.md` or `contract-checker.md`, use those instead (an ejected copy). Fix every finding, or note why you disagree. Re-run `make check` if you changed code.
 
 ## 6. Ship
 - `git push -u origin HEAD`
-- `gh pr create --base main --title "<issue title> (#$issue)" --body-file <file>`, the body following `.github/pull_request_template.md`: `Closes #$issue` (a bundle: also `Closes #n` for every bundled issue), Verification (what you ran, what it printed), Size (budget vs actual, estimate vs actual minutes), Review (each finding and what happened), Calls I made.
+- `gh pr create --base main --title "<issue title> (#$issue)" --body-file <file>`, the body following `.github/pull_request_template.md`: `Closes #$issue` (a bundle: also `Closes #n` for every bundled issue), Verification (what you ran, what it printed; for a UI issue, each `Visual:` bullet and the screenshot that shows it), Size (budget vs actual, estimate vs actual minutes), Review (each finding and what happened), Calls I made.
 - `bind_pr` with the PR, then `set_monitor` with Auto-fix on.
 - `ck-github set-status <project-number> <issue-url> "In review"` (project number: SPEC.md header).
 

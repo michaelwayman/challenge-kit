@@ -35,7 +35,7 @@ Move on only when the user has ended the research follow-up loop. Everything bel
 
 ## 2. Requirements and out of scope
 Draft from the brief and research:
-- **R<n>**: one per capability a user or caller can exercise, each with a brief § source, observable acceptance bullets at the chosen grade, and a size (S/M/L). Split a deliverable into several Rs when it has independent parts. At demo grade, propose optional parts as O items.
+- **R<n>**: one per capability a user or caller can exercise, each with a brief § source, observable acceptance bullets at the chosen grade, and a size (S/M/L). Split a deliverable into several Rs when it has independent parts. An R with a user-facing UI also gets **visual acceptance bullets**, each starting `Visual:`, taken from research's visual design topic and checkable on a screenshot at mobile (375px) and desktop (1280px) widths. At demo grade, propose optional parts as O items.
 - **O<n>**: everything the brief rules out, plus what the user rules out below.
 
 Then ask about every gap: things the brief leaves open, implies but doesn't state, or that research flagged. AskUserQuestion, up to 4 questions per batch, 2–4 options each, recommendation first with "(Recommended)". Typical options: in scope / out of scope / a narrower version. Keep going until no gap is left.
@@ -49,7 +49,7 @@ Propose, from research recommendations:
 Ask only about choices where research found a real trade-off (a row in its Tensions table) or the brief says the choice will be questioned. Accept the rest as proposed; they appear in the final review anyway. If the user asks a research question here, run `challenge-kit:research ask "<question>"` and come back.
 
 ## 4. Milestones and priority
-- **M1 Integration**: scaffolding, `make check`, CI job named `check`, contract docs + examples + mocks. It goes first.
+- **M1 Integration**: scaffolding, `make check`, CI job named `check`, contract docs + examples + mocks. If any R has `Visual:` bullets, scaffolding also adds `make screenshots URL=<url> OUT=<dir>`: a pinned Playwright that saves full-page PNGs at 375×812 and 1280×800 (and 768×1024 at production grade), with `.ck/screenshots/` gitignored. It goes first.
 - Then one milestone per service or deliverable, then integration/smoke and any data migration last. Every active R maps to exactly one milestone.
 - Propose a Priority P0/P1/P2 for each R and milestone: P0 for what others depend on or the brief weights most.
 

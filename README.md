@@ -90,6 +90,7 @@ Agents run inside the project repo, so they follow its `AGENTS.md`. Feedback tha
 
 ## Keeping workers on track
 
+- **UI deliverables**: research adds a visual design topic for each one, kickoff gives its requirements `Visual:` acceptance bullets, and workers capture screenshots at 375px and 1280px (`make screenshots`) that they and the reviewer check against those bullets.
 - **Before code**: each round's table shows how the planner reads each requirement and a size budget. A misreading is a sentence you correct, not a PR.
 - **Before the PR**: the worker stays inside `Touches:`, checks its diff against the budget, and runs the reviewer. The reviewer treats a misreading, scope creep and anything out of scope as findings.
 - **After the PR**: review-pr posts an independent review. Comment on the PR (Auto-fix acts on it), `orchestrate redo <n>`, or fix the requirement itself with `change-spec`.

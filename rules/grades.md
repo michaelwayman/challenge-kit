@@ -12,6 +12,7 @@ Project-agnostic. Kickoff, research, replan, bundle, orchestrate, work-issue, re
 | CI | `make check` locally | `check` job in CI | plus required check and branch protection |
 | Observability and hardening | none; building it is scope creep | basic logging | logging, health checks, config by environment |
 | Review | reviewer blocks only on correctness, misreading and scope | full reviewer | full reviewer plus contract-checker on every PR |
+| UI checks (Rs with `Visual:` bullets) | main state at 375 and 1280px | every state the acceptance names, at both widths | plus 768px, keyboard focus states and reduced motion |
 | Integrate | smoke test only | contracts plus smoke test | contracts, consumers against real providers, smoke test, `make test-integration` |
 | Estimate multiplier | 0.6 | 1.0 | 1.6 |
 | Reserve (integration and review overhead) | 15% of the time box | 25% | 35% |

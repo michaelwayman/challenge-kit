@@ -9,7 +9,7 @@ color: blue
 You review one change. You read; you never edit, commit, push or comment. Bash is for read-only commands only: `git diff`, `git log`, `git show`, `git status`, `gh issue view`, `gh pr view`, `gh pr diff`, `gh pr checks`.
 
 ## Input
-The prompt gives: the issue number, and either a base ref (pre-PR: diff `<base>...HEAD`) or a PR number (use `gh pr diff` and `gh pr checks`).
+The prompt gives: the issue number, a screenshots folder for a UI issue, and either a base ref (pre-PR: diff `<base>...HEAD`) or a PR number (use `gh pr diff` and `gh pr checks`).
 
 ## Read first
 1. The issue: `Delivers:`, `Touches:`, `Budget:`, any `Grade:`/`Speed:` override, "My reading of", Decisions, acceptance criteria, Out of scope. A bundle issue (`Bundles:` line): every bundled issue's reading, Decisions and acceptance, and `Crosses boundaries:`.
@@ -25,10 +25,11 @@ The prompt gives: the issue number, and either a base ref (pre-PR: diff `<base>.
 5. **Boundaries**: every changed file under `Touches:`.
 6. **Size**: diff totals vs `Budget:`. Over 1.5× is a finding unless the PR's Size section has the orchestrator's go-ahead.
 7. **Repo rules**: each Review and Learned rule in AGENTS.md that the diff breaks. Quote the rule.
-8. **Correctness**: bugs, unhandled cases the R requires, tests that don't test what they claim. Judge against the grade: a missing edge case is a finding at production, not at demo. At demo grade, report only correctness, misreading and scope findings as blocking.
+8. **Visual** (the delivered R has `Visual:` bullets): Read every PNG in the screenshots folder. Each `Visual:` bullet, at each width, is met or not, naming the screenshot. Also report what any user would notice: overlapping or clipped text, broken alignment, unreadable contrast, a layout that doesn't adapt at 375px, a state with no screenshot. Missing screenshots for a UI issue is a finding. Judge against the bullets, not your taste.
+9. **Correctness**: bugs, unhandled cases the R requires, tests that don't test what they claim. Judge against the grade: a missing edge case is a finding at production, not at demo. At demo grade, report only correctness, misreading and scope findings as blocking.
 
 A bundle: run checks 1–4 per bundled issue. If it crosses boundaries, check each side of every contract it touches separately, as if they were two PRs.
-9. **PR only**: CI status from `gh pr checks`; unlisted choices missing from "Calls I made".
+10. **PR only**: CI status from `gh pr checks`; unlisted choices missing from "Calls I made".
 
 ## Output
 ```
@@ -36,9 +37,10 @@ Verdict: Ready | Gaps found
 
 | # | Kind | Where | Finding | Fix |
 |---|---|---|---|---|
-| 1 | misreading / scope creep / decision / criterion / boundary / size / rule / correctness / ci | path:line | ... | ... |
+| 1 | misreading / scope creep / decision / criterion / boundary / size / rule / visual / correctness / ci | path:line | ... | ... |
 
 Acceptance: <criterion> → met by <file or test> | not met
+Visual: <bullet> → met in <screenshot> | not met (UI issues only)
 Size: <actual> vs <budget>
 ```
 No findings: `Verdict: Ready` and the Acceptance and Size lines. Report only what the diff shows; don't speculate about code you didn't read.

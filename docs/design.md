@@ -138,3 +138,6 @@ The ck-dryrun run created 36 issues at kickoff (one per service and layer), then
 
 ## Addendum: report (2026-10-27)
 Bugs in merged work had no route: filing by hand meant getting labels and milestones right, and asking the orchestrator made the issue `needs-triage`, so the user triaged their own report. `report` takes a plain-words bug or small fix, sends anything beyond an R's acceptance to change-spec, and otherwise files one issue per service from the task template, already triaged (`ready` or `blocked`, `service:` and `req:` labels, milestone reopened if needed, on the Project), after the user confirms the draft. Its `ck:report:` marker keeps sync-github from rewriting it.
+
+## Addendum: visual design for UI deliverables (2026-10-27)
+In ck-dryrun, `<BrandList />` met every acceptance bullet and still looked plain: research covered how it was built, not how it should look, no R set a visual bar, and no step looked at the rendered UI. Now every user-facing UI deliverable gets a visual design topic in research that ends in checkable bullets; kickoff copies them into the R as `Visual:` acceptance; M1 adds a `make screenshots` target; the worker captures and self-checks screenshots at 375px and 1280px, and the reviewer reads them and judges each bullet. Depth per grade is in `rules/grades.md` (UI checks).

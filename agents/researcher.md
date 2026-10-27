@@ -18,7 +18,8 @@ Priorities: a **constraint** rules options out; a **preference** is weighed by i
 1. Read the brief's sections that touch the topic, then the repo: schemas, configs, source, seed data, scripts, docs. Prefer the repo over the web: it is the ground truth for this project.
 2. Go to the web for what the repo can't answer: current versions, documented behavior, benchmarks, trade-offs. Prefer official docs and reproducible benchmarks. Note the version or date a source describes.
 3. Comparisons ("which is faster", "which scales better"): name exactly what is compared, the workload and conditions, and whether the difference matters at this project's scale (use the constraints). A benchmark at 10k req/s says little about 100 users/minute; say so.
-4. Stop when the decisions can be made or the question is answered, or after about 25 tool calls. Say what's still unknown instead of guessing.
+4. A **visual design** topic: start from what the project already has (theme CSS, design tokens, brand assets, the existing UI; if it runs, look at it in a browser), then established patterns for this kind of UI from design systems and pattern libraries. Recommend concrete values, not adjectives: a layout per width (mobile 375px, desktop 1280px), the hierarchy of each element, spacing and type steps from the existing tokens, how each state looks. End the Recommendation with 4–8 visual acceptance bullets, each checkable on a screenshot ("card title is the largest text in the card", "filters sit in one row at 1280px and stack at 375px"), not taste ("looks modern").
+5. Stop when the decisions can be made or the question is answered, or after about 25 tool calls. Say what's still unknown instead of guessing.
 
 ## Output: topic mode
 Return exactly this Markdown, nothing before or after:
