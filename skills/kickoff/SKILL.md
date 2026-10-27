@@ -34,11 +34,17 @@ Pass the research depth, and the time box and grade as a constraint ("fits <n>h 
 Move on only when the user has ended the research follow-up loop. Everything below draws on `docs/research.md`: its Priorities, each topic's recommendation, and "How it fits together".
 
 ## 2. Requirements and out of scope
-Draft from the brief and research:
-- **R<n>**: one per capability a user or caller can exercise, each with a brief § source, observable acceptance bullets at the chosen grade, and a size (S/M/L). Split a deliverable into several Rs when it has independent parts. An R with a user-facing UI also gets **visual acceptance bullets**, each starting `Visual:`, taken from research's visual design topic and checkable on a screenshot at mobile (375px) and desktop (1280px) widths. At demo grade, propose optional parts as O items.
-- **O<n>**: everything the brief rules out, plus what the user rules out below.
+**First, answer every open question.** Collect every Open question in `docs/research.md` (`[source gap]` ones first), plus every gap the brief leaves open or implies without stating. Put each to the user: AskUserQuestion, up to 4 per batch, 2–4 options, recommendation first with "(Recommended)", and always a "You decide" option. Record each in SPEC.md's **Decisions asked** table: Question · Answer · Decided by (`you`, or `delegated` when they picked "You decide" and you applied the recommendation) · Source (research § or brief §). Never write your own answer into an R, O or T while its question is unanswered.
 
-Then ask about every gap: things the brief leaves open, implies but doesn't state, or that research flagged. AskUserQuestion, up to 4 questions per batch, 2–4 options each, recommendation first with "(Recommended)". Typical options: in scope / out of scope / a narrower version. Keep going until no gap is left.
+**Then list the deliverables.** Every deliverable bullet in the brief, nested sub-bullets included: each section a README or write-up must have, each command, script, doc or note it asks for. They feed the Deliverables trace below.
+
+Then draft from the brief, research and the answers:
+- **R<n>** (`Kind: product`): one per capability a user or caller can exercise, each with a brief § source, observable acceptance bullets at the chosen grade, and a size (S/M/L). Split a deliverable into several Rs when it has independent parts. An R with a user-facing UI also gets **visual acceptance bullets**, each starting `Visual:`, taken from research's visual design topic and checkable on a screenshot at mobile (375px) and desktop (1280px) widths. At demo grade, propose optional parts as O items.
+- **R<n>** (`Kind: submission`): deliverables that exist only for the submission (a README, a write-up, notes), with one acceptance bullet per brief sub-bullet. When a section describes a product R ("how to run the migration"), that product R also gets the bullet "README § <section> written", so each section lands with the work it describes; the submission R assembles and checks the whole document, and its milestone comes after theirs.
+- **O<n>**: everything the brief rules out, plus what the user rules out below.
+- **Deliverables trace**: Brief bullet · Covered by (R<n> and its acceptance bullet, or O<n>) · Kind. Every deliverable bullet has a row, and every row is covered.
+
+Then ask about any new gap drafting surfaced, the same way. AskUserQuestion, up to 4 questions per batch, 2–4 options each, recommendation first with "(Recommended)". Typical options: in scope / out of scope / a narrower version. Keep going until no gap is left.
 
 ## 3. Boundaries, contracts, technology
 Propose, from research recommendations:
@@ -59,11 +65,12 @@ Per rules/grades.md § Estimates (time already spent on research counts). Show: 
 If it doesn't fit, first offer the speed levers from rules/grades.md (AskUserQuestion, multiSelect, process levers first, each with its saving here), and re-run the fit. Then, for the rows still below the line, the user picks per R: **stretch** (P2, built only while time remains), **cut** (becomes an O, "cut for time"), or **keep** (needs more hours). Never cut without the user's pick. The chosen levers become the Speed setting.
 
 ## 5. Final review
-Show **one table of every choice**: the time box, grade, research and contract depth, issue size and speed settings, the fit summary; each R (with priority, size and milestone), each O, each service boundary, each contract, each T, each M. Columns: ID · Choice · Why · Source (brief §, research §, or "you"). Ask the user to change any row. Apply edits and show the table again until they have none.
+Show **one table of every choice**: the time box, grade, research and contract depth, issue size and speed settings, the fit summary; each R (with priority, size and milestone), each O, each service boundary, each contract, each T, each M. Columns: ID · Choice · Why · Source (brief §, research §, or "you"). Then show the **Deliverables trace** and the **Decisions asked** table. Ask the user to change any row. Apply edits and show the tables again until they have none.
 
 ## 6. Write locally, then the ready gate
 - Write `SPEC.md` from `${CLAUDE_PLUGIN_ROOT}/templates/SPEC.md.tmpl` (header line keeps `{{PROJECT_URL}}`/`{{PROJECT_NUMBER}}`/`{{LOG_ISSUE}}` until sync-github fills them), with "Time box and grade" filled in and a changelog row "Initial spec".
 - Write `docs/contracts/<name>.md` per contract: purpose, every request/operation with fields and nullability, every error, and an `examples/` folder with one JSON file per documented case. Mocks are Integration issues, not written now.
+- If any Deliverables trace row is uncovered, don't show the gate: ask how to cover it (a new R, an acceptance bullet on an existing R, or an O), apply it, and check again.
 - Tell the user what you wrote, then say exactly: **"Review SPEC.md and docs/contracts/. Say `ready` to commit and set up GitHub, or tell me what to change."**
 
 Stop. Wait for the user's reply.

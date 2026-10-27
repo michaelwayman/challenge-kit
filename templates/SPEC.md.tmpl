@@ -26,16 +26,33 @@ GitHub Project: {{PROJECT_URL}} (number {{PROJECT_NUMBER}}) · Progress log: {{L
 
 ## Requirements
 
-<!-- One per capability. Priority: P0 | P1 | P2. Status: active | removed (YYYY-MM-DD, reason). Optional overrides from replan: `Grade: <g> (override)`, `Speed: <levers>`. -->
+<!-- One per capability. Kind: product (something a user or caller can do) | submission (a deliverable that exists only for the submission, such as the README). Priority: P0 | P1 | P2. Status: active | removed (YYYY-MM-DD, reason). Optional overrides from replan: `Grade: <g> (override)`, `Speed: <levers>`. -->
 
 ### R1. {{Capability, as something a user or caller can do}}
 - Source: {{BRIEF_PATH}} § {{section}}
+- Kind: {{product / submission}}
 - Priority: P0
 - Status: active
 - Milestone: M1
 - Estimate: {{S / M / L}} (~{{minutes}} min)
 - Acceptance:
   - {{Observable, testable statement}}
+
+## Deliverables trace
+
+<!-- Every deliverable bullet in the brief, nested ones included, and what covers it. change-spec keeps this whole. -->
+
+| Brief bullet | Covered by | Kind |
+|---|---|---|
+| {{brief § bullet}} | {{R<n>: acceptance bullet, or O<n>}} | {{product / submission}} |
+
+## Decisions asked
+
+<!-- Every research Open question and brief gap kickoff put to the user. -->
+
+| Question | Answer | Decided by | Source |
+|---|---|---|---|
+| {{question}} | {{answer}} | {{you / delegated}} | {{research § or brief §}} |
 
 ## Out of scope
 

@@ -44,6 +44,7 @@ Show one table: Operation · Affected (issue / PR / contract / milestone) · Pro
 - **removed R / moved out**: open issues closed as not planned with a comment; an open PR gets a comment recommending it be closed (the user decides)
 - **boundary / T change**: a `contract` issue if any contract changes; affected issues lose `plan-approved`
 - **milestone with new work but closed**: reopen
+- **Deliverables trace**: every brief bullet a removed or moved R covered is remapped to another R or dropped as an O; the table shows each one, and none may be left uncovered. A new answer to an open question adds a Decisions asked row
 
 Ask the user to confirm or edit (AskUserQuestion: apply / let me edit). Nothing is written before a yes.
 
